@@ -67,7 +67,7 @@ var checkUrl = function(url, checksfile){
 	        var present = $(checks[ii]).length > 0;
 	        out[checks[ii]] = present;
 	    }
-	    return out;
+	    printOutput(out);
 	});
 }
 
@@ -77,6 +77,11 @@ var clone = function(fn) {
     return fn.bind({});
 };
 
+var printOutput = function(checkJson){
+	var outJson = JSON.stringify(checkJson, null, 4);
+    console.log(outJson);
+}
+
 if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
@@ -85,13 +90,10 @@ if(require.main == module) {
         .parse(process.argv);
 
     if(typeof program.url == 'undefined'){ // No me pasan una URL como parametro
-    	var checkJson = checkHtmlFile(program.file, program.checks);
+    	printOutput(checkHtmlFile(program.file, program.checks));
     } else { // Viene una URL como parametro
-    	var checkJson = checkUrl(program.url, program.checks);
+    	checkUrl(program.url, program.checks);
     }
-    
-    var outJson = JSON.stringify(checkJson, null, 4);
-    console.log(outJson);
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
